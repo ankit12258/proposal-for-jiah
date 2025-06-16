@@ -59,10 +59,6 @@
             font-size: 14px;
             margin: 10px 0;
         }
-        #audioFallback {
-            display: none;
-            margin-top: 20px;
-        }
     </style>
 </head>
 <body>
@@ -75,20 +71,15 @@
     </div>
 
     <!-- ===== MUSIC PLAYER ===== -->
-    <!-- 1. Primary: Your Google Drive MP3 -->
-    <audio id="proposalSong" preload="auto">
-        <source src="https://drive.google.com/uc?export=download&id=1-2XrK75izqGlI_f8wSWIOhQkqHVIC7Vw" type="audio/mpeg">
+    <!-- 1. Your Google Drive MP3 (Correct Format) -->
+    <audio id="proposalSong">
+        <source src="https://drive.google.com/uc?export=download&id=1-cV_DmPCnBnQcZ26KYDuudh5QA_Jm8OZ" type="audio/mpeg">
     </audio>
     
-    <!-- 2. Fallback: YouTube -->
+    <!-- 2. YouTube Fallback (Hidden) -->
     <iframe id="ytFallback"
-            src="https://www.youtube.com/embed/2Vv-BfVoq4g?enablejsapi=1&autoplay=0&start=85"
+            src="https://www.youtube.com/embed/2Vv-BfVoq4g?enablejsapi=1"
             style="display:none"></iframe>
-    
-    <!-- 3. Visible fallback link -->
-    <div id="audioFallback">
-        <p>Music didn't play? <a href="https://drive.google.com/uc?export=download&id=1-2XrK75izqGlI_f8wSWIOhQkqHVIC7Vw" target="_blank">Click here to listen</a></p>
-    </div>
 
     <script>
         // 1. MOBILE AUDIO UNLOCK
@@ -124,9 +115,8 @@
             // Try Google Drive MP3 first
             const song = document.getElementById('proposalSong');
             song.play().catch(e => {
-                console.log("Trying YouTube fallback");
+                console.log("Using YouTube fallback");
                 document.getElementById('ytFallback').src += "&autoplay=1";
-                document.getElementById('audioFallback').style.display = 'block';
             });
             
             // Create hearts
@@ -158,10 +148,10 @@
             setInterval(createHeart, 300);
         });
 
-        // 4. Load YouTube API (for fallback)
+        // 4. Load YouTube API
         const tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         document.body.appendChild(tag);
     </script>
 </body>
-    </html>
+</html>
