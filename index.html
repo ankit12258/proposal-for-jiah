@@ -9,90 +9,77 @@
             background: #ffebee;
             padding: 20px;
             overflow: hidden;
-            min-height: 100vh;
         }
         /* ... (keep all your existing styles) ... */
     </style>
 </head>
 <body>
     <h1>Will you be my forever? 💍</h1>
-    <p id="musicHint" style="color:#e91e63; display:none;">
-       🔊 Tap anywhere to enable music!
-    </p>
     
     <div class="buttons">
         <button id="yesBtn">YES! 😍</button>
         <button id="noBtn">No 😜</button>
     </div>
 
-    <!-- MUSIC SOLUTION WITH 3 FALLBACKS -->
-    <!-- 1. Primary: HTML5 Audio -->
-    <audio id="html5Audio" preload="auto">
-        <source src="https://drive.google.com/uc?export=download&id=1-2XrK75izqGlI_f8wSWIOhQkqHVIC7Vw" type="audio/mpeg">
-    </audio>
-    
-    <!-- 2. Secondary: YouTube Iframe (hidden) -->
-    <iframe id="ytAudio" style="display:none"
-            src="https://www.youtube.com/embed/2Vv-BfVoq4g?enablejsapi=1&autoplay=0"
-            frameborder="0"></iframe>
-    
-    <!-- 3. Backup: Embedded SoundCloud -->
-    <iframe id="scAudio" style="display:none"
-            src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/347294491&auto_play=false"
-            frameborder="no"></iframe>
+    <!-- 1. Hidden YouTube Player -->
+    <div id="ytPlayer" style="display:none;"></div>
+
+    <!-- 2. Visible fallback message -->
+    <p id="songHint" style="color:#e91e63; display:none;">
+       🎵 Music enabled! (May need to unmute)
+    </p>
 
     <script>
-        // 1. AUDIO UNLOCK SYSTEM =============================
-        let audioReady = false;
-        const unlockAudio = () => {
-            if (!audioReady) {
-                audioReady = true;
-                document.getElementById('musicHint').style.display = 'none';
-                
-                // Try HTML5 audio first
-                const audio = document.getElementById('html5Audio');
-                audio.volume = 0.5;
-                audio.play().then(() => {
-                    audio.pause();
-                    audio.currentTime = 0;
-                }).catch(e => {
-                    console.log("HTML5 audio failed, using fallback");
-                });
-            }
-        };
-        
-        // Show hint on mobile
-        if (/iPhone|iPad|Android/i.test(navigator.userAgent)) {
-            document.getElementById('musicHint').style.display = 'block';
-        }
-        
-        // Enable on any interaction
-        document.addEventListener('click', unlockAudio);
-        document.addEventListener('touchstart', unlockAudio);
+        // YouTube API Setup
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.body.appendChild(tag);
 
-        // 2. PLAY MUSIC FUNCTION =============================
-        const playSong = () => {
-            // Try HTML5 first
-            const audio = document.getElementById('html5Audio');
-            audio.play().catch(e => {
-                console.log("Trying YouTube fallback");
-                document.getElementById('ytAudio').src += "&autoplay=1";
+        // Player instance
+        let player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('ytPlayer', {
+                height: '0',
+                width: '0',
+                videoId: '2Vv-BfVoq4g', // Ed Sheeran - Perfect
+                playerVars: {
+                    autoplay: 0,
+                    controls: 0,
+                    disablekb: 1,
+                    modestbranding: 1
+                },
+                events: {
+                    'onReady': onPlayerReady
+                }
             });
-        };
+        }
 
-        // 3. "YES" BUTTON HANDLER ============================
-        document.getElementById('yesBtn').addEventListener('click', function() {
-            if (!audioReady) {
-                alert("Please tap the screen first to enable music!");
-                return;
-            }
-            
-            playSong();
-            
-            // ... (your existing celebration code with hearts) ...
+        function onPlayerReady() {
+            document.getElementById('yesBtn').addEventListener('click', function() {
+                // Show hint
+                document.getElementById('songHint').style.display = 'block';
+                
+                // Start song at 85 seconds (chorus)
+                player.seekTo(85);
+                player.playVideo();
+                player.setVolume(50);
+                
+                // Your existing celebration code
+                document.body.innerHTML = `
+                    <h1 style="margin-top: 20vh;">She said YES! 💘</h1>
+                    <p>"Baby, I'm dancing in the dark..."</p>
+                    <div style="margin-top: 30px;">
+                        💍 With you, I've found my perfect 💍
+                    </div>
+                `;
+            });
+        }
+
+        // Runaway "No" button (keep your existing fun feature)
+        document.getElementById('noBtn').addEventListener('mouseover', function() {
+            this.style.left = Math.random() * 70 + 'vw';
+            this.style.top = Math.random() * 70 + 'vh';
         });
-
-        // ... (rest of your existing JavaScript) ...
     </script>
 </body>
 </html>
