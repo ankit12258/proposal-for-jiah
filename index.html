@@ -9,62 +9,140 @@
             background: #ffebee;
             padding: 20px;
             overflow: hidden;
+            min-height: 100vh;
         }
-        /* ... (keep all your existing styles) ... */
+        h1 {
+            color: #e91e63;
+            margin: 20px 0;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+        .buttons {
+            margin: 40px auto;
+            position: relative;
+            height: 80px;
+            width: 100%;
+        }
+        button {
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        #yesBtn {
+            background: #4CAF50;
+            color: white;
+            margin-right: 15px;
+        }
+        #noBtn {
+            background: #f44336;
+            color: white;
+            position: absolute;
+        }
+        .heart {
+            position: absolute;
+            font-size: 24px;
+            color: red;
+            animation: float 3s linear forwards;
+            pointer-events: none;
+        }
+        @keyframes float {
+            to {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        #musicHint {
+            color: #e91e63;
+            font-size: 14px;
+            margin: 10px 0;
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <!-- ... (keep all your existing HTML) ... -->
+    <h1>Will you be my forever? 💍</h1>
+    <p id="musicHint">🔊 Tap anywhere to unlock music!</p>
+    
+    <div class="buttons">
+        <button id="yesBtn">YES! 😍</button>
+        <button id="noBtn">No 😜</button>
+    </div>
 
-    <!-- MUSIC PLAYER WITH 3 FALLBACK OPTIONS -->
+    <!-- Audio Player -->
     <audio id="perfectSong" preload="auto">
-        <!-- 1. Primary: Your Google Drive MP3 -->
         <source src="https://drive.google.com/uc?export=download&id=1-2XrK75izqGlI_f8wSWIOhQkqHVIC7Vw" type="audio/mpeg">
-        
-        <!-- 2. Secondary: Direct MP3 Host -->
-        <source src="https://YOUR_ALTERNATE_MP3_LINK.mp3" type="audio/mpeg">
-        
-        <!-- 3. Fallback: YouTube Audio -->
-        <iframe id="ytAudio" style="display:none" 
-                src="https://www.youtube.com/embed/2Vv-BfVoq4g?autoplay=1&enablejsapi=1" 
-                frameborder="0" allow="autoplay"></iframe>
     </audio>
 
     <script>
-        // 1. INITIALIZE AUDIO ==================================
-        const song = document.getElementById('perfectSong');
-        song.volume = 0.5;
-        
-        // 2. MOBILE AUDIO UNLOCK ===============================
+        // 1. MOBILE AUDIO UNLOCK ==============================
         let audioUnlocked = false;
         const unlockAudio = () => {
             if (!audioUnlocked) {
                 audioUnlocked = true;
-                // Play/pause to activate audio
-                song.play().then(() => song.pause()).catch(e => {
-                    console.log("Using YouTube fallback");
-                    document.getElementById('ytAudio').style.display = 'block';
-                });
+                document.getElementById('musicHint').style.display = 'none';
+                // Initialize audio
+                const song = document.getElementById('perfectSong');
+                song.volume = 0.5;
+                song.play().then(() => song.pause());
             }
         };
         
-        // 3. PLAY WHEN "YES" CLICKED ==========================
-        document.getElementById('yesBtn').addEventListener('click', () => {
-            // Try HTML5 Audio first
-            song.play().catch(e => {
-                // Fallback to YouTube if HTML5 fails
-                const ytFrame = document.getElementById('ytAudio');
-                ytFrame.contentWindow.postMessage(
-                    '{"event":"command","func":"playVideo","args":""}', '*'
-                );
-            });
-            
-            // ... (rest of your celebration code) ...
+        // Show hint on mobile
+        if (/iPhone|iPad|Android/i.test(navigator.userAgent)) {
+            document.getElementById('musicHint').style.display = 'block';
+        }
+        
+        // Enable audio on interaction
+        document.addEventListener('click', unlockAudio, { once: true });
+        document.addEventListener('touchstart', unlockAudio, { once: true });
+
+        // 2. RUNAWAY "NO" BUTTON =============================
+        const noBtn = document.getElementById('noBtn');
+        noBtn.addEventListener('mouseover', function() {
+            this.style.left = Math.random() * 60 + 'vw';
+            this.style.top = Math.random() * 60 + 'vh';
         });
 
-        // 4. ENABLE AUDIO ON ANY INTERACTION ==================
-        ['click', 'touchstart', 'keydown'].forEach(event => {
-            document.body.addEventListener(event, unlockAudio, { once: true });
+        // 3. "YES" BUTTON CELEBRATION ========================
+        document.getElementById('yesBtn').addEventListener('click', function() {
+            // Play song
+            const song = document.getElementById('perfectSong');
+            song.currentTime = 0;
+            song.play().catch(e => console.log("Audio error:", e));
+            
+            // Create hearts
+            function createHeart() {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 5000);
+            }
+            
+            // Initial hearts
+            for (let i = 0; i < 30; i++) {
+                createHeart();
+            }
+            
+            // Continuous hearts
+            const heartInterval = setInterval(createHeart, 300);
+            
+            // Celebration message
+            document.body.innerHTML = `
+                <h1 style="margin-top: 30vh;">She said YES! 💘</h1>
+                <p style="font-size: 20px;">"Darling, you look perfect tonight"</p>
+                <div style="margin-top: 30px; font-size: 24px;">
+                    💍 Will you marry me? 💍
+                </div>
+            `;
+            
+            // Keep hearts animating
+            document.body.addEventListener('click', createHeart);
         });
     </script>
 </body>
