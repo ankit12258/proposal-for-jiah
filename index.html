@@ -9,45 +9,95 @@
             background: #ffebee;
             padding: 20px;
             overflow: hidden;
+            min-height: 100vh;
         }
-        /* ... (keep all your existing styles) ... */
+        h1 {
+            color: #e91e63;
+            margin: 20px 0;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+        .buttons {
+            margin: 40px auto;
+            position: relative;
+            height: 80px;
+            width: 100%;
+        }
+        button {
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        #yesBtn {
+            background: #4CAF50;
+            color: white;
+            margin-right: 15px;
+        }
+        #noBtn {
+            background: #f44336;
+            color: white;
+            position: absolute;
+        }
+        .heart {
+            position: absolute;
+            font-size: 24px;
+            color: red;
+            animation: float 3s linear forwards;
+            pointer-events: none;
+        }
+        @keyframes float {
+            to {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        #musicHint {
+            color: #e91e63;
+            font-size: 14px;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
     <h1>Will you be my forever? 💍</h1>
+    <p id="musicHint">🔊 Music will play when you click YES!</p>
     
     <div class="buttons">
         <button id="yesBtn">YES! 😍</button>
         <button id="noBtn">No 😜</button>
     </div>
 
-    <!-- 1. Hidden YouTube Player -->
-    <div id="ytPlayer" style="display:none;"></div>
-
-    <!-- 2. Visible fallback message -->
-    <p id="songHint" style="color:#e91e63; display:none;">
-       🎵 Music enabled! (May need to unmute)
-    </p>
+    <!-- ===== MUSIC PLAYER ===== -->
+    <div id="musicContainer" style="display:none">
+        <!-- 1. Primary: YouTube iframe -->
+        <iframe id="youtubePlayer" 
+                width="0" 
+                height="0" 
+                src="https://www.youtube.com/embed/2Vv-BfVoq4g?enablejsapi=1&start=85" 
+                frameborder="0">
+        </iframe>
+        
+        <!-- 2. Fallback: Direct MP3 -->
+        <audio id="backupAudio">
+            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3" type="audio/mpeg">
+        </audio>
+    </div>
 
     <script>
-        // YouTube API Setup
-        const tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        document.body.appendChild(tag);
+        // 1. RUNAWAY "NO" BUTTON
+        const noBtn = document.getElementById('noBtn');
+        noBtn.addEventListener('mouseover', function() {
+            this.style.left = Math.random() * 60 + 'vw';
+            this.style.top = Math.random() * 60 + 'vh';
+        });
 
-        // Player instance
+        // 2. MUSIC PLAYER SYSTEM
         let player;
         function onYouTubeIframeAPIReady() {
-            player = new YT.Player('ytPlayer', {
-                height: '0',
-                width: '0',
-                videoId: '2Vv-BfVoq4g', // Ed Sheeran - Perfect
-                playerVars: {
-                    autoplay: 0,
-                    controls: 0,
-                    disablekb: 1,
-                    modestbranding: 1
-                },
+            player = new YT.Player('youtubePlayer', {
                 events: {
                     'onReady': onPlayerReady
                 }
@@ -56,30 +106,52 @@
 
         function onPlayerReady() {
             document.getElementById('yesBtn').addEventListener('click', function() {
-                // Show hint
-                document.getElementById('songHint').style.display = 'block';
+                // Try YouTube first
+                try {
+                    player.playVideo();
+                    player.unMute();
+                    player.setVolume(70);
+                } catch (e) {
+                    // Fallback to MP3
+                    const audio = document.getElementById('backupAudio');
+                    audio.volume = 0.7;
+                    audio.play().catch(e => console.log("Audio error:", e));
+                }
                 
-                // Start song at 85 seconds (chorus)
-                player.seekTo(85);
-                player.playVideo();
-                player.setVolume(50);
+                // Celebration effects
+                function createHeart() {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.innerHTML = '❤️';
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    document.body.appendChild(heart);
+                    setTimeout(() => heart.remove(), 5000);
+                }
                 
-                // Your existing celebration code
+                // Create initial hearts
+                for (let i = 0; i < 30; i++) {
+                    createHeart();
+                }
+                
+                // Celebration message
                 document.body.innerHTML = `
-                    <h1 style="margin-top: 20vh;">She said YES! 💘</h1>
-                    <p>"Baby, I'm dancing in the dark..."</p>
-                    <div style="margin-top: 30px;">
-                        💍 With you, I've found my perfect 💍
+                    <h1 style="margin-top:20vh">She said YES! 💘</h1>
+                    <p style="font-size:20px">"Darling, you look perfect tonight"</p>
+                    <div style="margin-top:30px;font-size:24px;">
+                        💍 Will you marry me? 💍
                     </div>
                 `;
+                
+                // Keep creating hearts
+                setInterval(createHeart, 300);
             });
         }
 
-        // Runaway "No" button (keep your existing fun feature)
-        document.getElementById('noBtn').addEventListener('mouseover', function() {
-            this.style.left = Math.random() * 70 + 'vw';
-            this.style.top = Math.random() * 70 + 'vh';
-        });
+        // 3. Load YouTube API
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.body.appendChild(tag);
     </script>
 </body>
-</html>
+    </html>
