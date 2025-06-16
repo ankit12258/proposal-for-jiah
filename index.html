@@ -27,7 +27,20 @@
             noBtn.style.left = Math.random() * 70 + 'vw';
             noBtn.style.top = Math.random() * 70 + 'vh';
         });
-        document.getElementById('yesBtn').addEventListener('click', () => {
+        document.getElementById('yesBtn').addEventListener('click', () => { <!-- Hidden music player -->
+<audio id="proposalSong" src="https://audio-url-here.mp3" preload="auto"></audio>
+
+<script>
+  // Play "Perfect" when she clicks YES
+  document.getElementById('yesBtn').addEventListener('click', function() {
+    const song = document.getElementById('proposalSong');
+    song.volume = 0.5; // 50% volume
+    song.play();
+    
+    // Your existing celebration code
+    document.body.innerHTML = '<h1>YAY! I LOVE YOU! 💘</h1><p>You make my life perfect! 💍</p>';
+  });
+</script>
             document.body.innerHTML = '<h1>YAY! I LOVE YOU! 💘</h1><p>You just made me the happiest person! 🎉</p>';
         });
     </script>
