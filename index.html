@@ -16,17 +16,6 @@
 <body>
     <!-- ... (keep all your existing HTML) ... -->
 
-    <!-- AUDIO HINT FOR MOBILE USERS -->
-    <p id="audioHint" style="color:#e91e63; display:none; margin-bottom: 20px;">
-       🔊 Tap anywhere to enable music!
-    </p>
-    <script>
-       // Show hint if on mobile
-       if (/iPhone|iPad|Android/i.test(navigator.userAgent)) {
-           document.getElementById('audioHint').style.display = 'block';
-       }
-    </script>
-
     <!-- MUSIC PLAYER WITH 3 FALLBACK OPTIONS -->
     <audio id="perfectSong" preload="auto">
         <!-- 1. Primary: Your Google Drive MP3 -->
@@ -51,8 +40,6 @@
         const unlockAudio = () => {
             if (!audioUnlocked) {
                 audioUnlocked = true;
-                // Hide the hint once audio is unlocked
-                document.getElementById('audioHint').style.display = 'none';
                 // Play/pause to activate audio
                 song.play().then(() => song.pause()).catch(e => {
                     console.log("Using YouTube fallback");
