@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Will You Marry Me? 💍</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            background: #ffebee; 
+            padding: 20px; 
+        }
+        h1 { color: #e91e63; }
+        #noBtn {
+            position: absolute;
+            transition: all 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <h1>Will you be my forever? 💖</h1>
+    <button id="yesBtn" style="background:#4CAF50; color:white; padding:15px 30px; border:none; border-radius:50px; font-size:18px;">YES! 😍</button>
+    <button id="noBtn" style="background:#f44336; color:white; padding:15px 30px; border:none; border-radius:50px; font-size:18px;">No 🙈</button>
+    
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        noBtn.addEventListener('mouseover', () => {
+            noBtn.style.left = Math.random() * 70 + 'vw';
+            noBtn.style.top = Math.random() * 70 + 'vh';
+        });
+        document.getElementById('yesBtn').addEventListener('click', () => {
+            document.body.innerHTML = '<h1>YAY! I LOVE YOU! 💘</h1><p>You just made me the happiest person! 🎉</p>';
+        });
+    </script>
+</body>
+</html>
