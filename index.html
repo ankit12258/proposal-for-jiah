@@ -3,46 +3,102 @@
 <head>
     <title>Will You Marry Me? 💍</title>
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            text-align: center; 
-            background: #ffebee; 
-            padding: 20px; 
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #ffebee;
+            padding: 20px;
+            overflow: hidden;
         }
-        h1 { color: #e91e63; }
+        h1 { 
+            color: #e91e63;
+            text-shadow: 2px 2px 4px rgba(233, 30, 99, 0.3);
+        }
         #noBtn {
             position: absolute;
             transition: all 0.3s;
         }
+        #yesBtn {
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            margin-right: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        #noBtn {
+            background: #f44336;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .heart {
+            position: absolute;
+            font-size: 24px;
+            color: red;
+            animation: float 4s linear forwards;
+        }
+        @keyframes float {
+            to {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Will you be my forever? 💖</h1>
-    <button id="yesBtn" style="background:#4CAF50; color:white; padding:15px 30px; border:none; border-radius:50px; font-size:18px;">YES! 😍</button>
-    <button id="noBtn" style="background:#f44336; color:white; padding:15px 30px; border:none; border-radius:50px; font-size:18px;">No 🙈</button>
-    
+    <h1>Will you be my forever? 💍</h1>
+    <button id="yesBtn">YES! 😍</button>
+    <button id="noBtn">No 🙈</button>
+
+    <!-- Ed Sheeran "Perfect" Audio -->
+    <audio id="perfectSong" src="https://drive.google.com/uc?export=download&id=1-2XrK75izqGlI_f8wSWIOhQkqHVIC7Vw" preload="auto"></audio>
+    <!-- Note: This is a placeholder audio - replace with your own file if needed -->
+
     <script>
+        // Runaway "No" button
         const noBtn = document.getElementById('noBtn');
         noBtn.addEventListener('mouseover', () => {
             noBtn.style.left = Math.random() * 70 + 'vw';
             noBtn.style.top = Math.random() * 70 + 'vh';
         });
-        document.getElementById('yesBtn').addEventListener('click', () => { <!-- Hidden music player -->
-<audio id="proposalSong" src="https://audio-url-here.mp3" preload="auto"></audio>
 
-<script>
-  // Play "Perfect" when she clicks YES
-  document.getElementById('yesBtn').addEventListener('click', function() {
-    const song = document.getElementById('proposalSong');
-    song.volume = 0.5; // 50% volume
-    song.play();
-    
-    // Your existing celebration code
-    document.body.innerHTML = '<h1>YAY! I LOVE YOU! 💘</h1><p>You make my life perfect! 💍</p>';
-  });
-</script>
-            document.body.innerHTML = '<h1>YAY! I LOVE YOU! 💘</h1><p>You just made me the happiest person! 🎉</p>';
+        // "YES" button celebration
+        document.getElementById('yesBtn').addEventListener('click', () => {
+            // Play "Perfect"
+            const song = document.getElementById('perfectSong');
+            song.volume = 0.5;
+            song.play();
+            
+            // Create hearts animation
+            for (let i = 0; i < 50; i++) {
+                createHeart();
+            }
+            
+            // Romantic message
+            document.body.innerHTML = `
+                <h1>She said YES! 💘</h1>
+                <p>"Darling, you look perfect tonight"</p>
+                <div style="margin-top:30px;font-size:24px;">
+                    💍 Will you marry me? 💍
+                </div>
+            `;
         });
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
     </script>
 </body>
 </html>
